@@ -1,0 +1,28 @@
+#include <Adafruit_NeoPixel.h>
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(1, 7, NEO_GRB + NEO_KHZ800);
+
+int front_color[] = {243,6, 255};
+int back_color[] = {46,30, 183};
+float current_color[] = {0,0,0}; 
+
+void setup() {
+  pinMode(A0, INPUT);
+  Serial.begin(9600);
+
+  pixels.begin(); // This initializes the NeoPixel library.  
+}
+
+void loop() {  
+  float input = analogRead(A0); // get the measurement from the potentiometer
+  input =abs(map(input, 0, 1023, -180, 180)); // map the values to the middle and from 180 to -180
+
+  // calculate colour by components, based on two extremes and angle
+  current_color[0] = map(input, 0, 180, front_color[0], back_color[0]);
+  current_color[1] = map(input, 0, 180, front_color[1], back_color[1]);
+  current_color[2] = map(input, 0, 180, front_color[2], back_color[2]);
+ 
+
+  pixels.setPixelColor(0, current_color[0], current_color[1], current_color[2]); // Moderately bright green color.
+  pixels.show(); // This sends the updated pixel color to the hardware.
+
+}
